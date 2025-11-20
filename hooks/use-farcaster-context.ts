@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { initializeFarcasterSDK } from "@/lib/farcaster-sdk"
+import { sdk } from "@/lib/farcaster-sdk"
 
 type FarcasterUser = {
   fid: number
@@ -20,8 +21,11 @@ export function useFarcasterContext() {
       try {
         const context = await initializeFarcasterSDK()
         setUser(context.user)
+
+        sdk.actions.ready()
       } catch (err) {
         setError(err as Error)
+        sdk.actions.ready()
       } finally {
         setIsLoading(false)
       }
