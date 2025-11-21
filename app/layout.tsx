@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   generator: "v0.app",
   other: {
     "fc:frame": "vNext",
-    "fc:frame:image": "/og-image.png",
+    "fc:frame:image": `${process.env.NEXT_PUBLIC_APP_URL || "https://statapp-nine.vercel.app"}/og-image.png`,
     "fc:frame:button:1": "View Stats",
     "fc:frame:button:1:action": "launch_frame",
   },
@@ -29,8 +29,8 @@ export const metadata: Metadata = {
         media: "(prefers-color-scheme: dark)",
       },
       {
-        url: "/icon.svg",
-        type: "image/svg+xml",
+        url: "/icon.png",
+        type: "image/png",
       },
     ],
     apple: "/apple-icon.png",
