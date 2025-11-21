@@ -2,13 +2,13 @@
   "frame": {
     "name": "StatApp",
     "homeUrl": "https://statapp-nine.vercel.app/",
-    "iconUrl": "https://statapp-nine.vercel.app//icon.png",
+    "iconUrl": "https://statapp-nine.vercel.app/icon.png",
     "version": "1",
-    "imageUrl": "https://statapp-nine.vercel.app//image.png",
+    "imageUrl": "https://statapp-nine.vercel.app/image.png",
     "subtitle": "user statistic ",
-    "webhookUrl": "https://statapp-nine.vercel.app//api/webhook",
+    "webhookUrl": "https://statapp-nine.vercel.app/api/webhook",
     "description": "Farcaster account user statistics",
-    "splashImageUrl": "https://statapp-nine.vercel.app//splash.png",
+    "splashImageUrl": "https://statapp-nine.vercel.app/splash.png",
     "primaryCategory": "social",
     "splashBackgroundColor": "#ffffff"
   },
