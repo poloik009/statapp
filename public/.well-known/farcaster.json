@@ -12,12 +12,9 @@
     "primaryCategory": "social",
     "splashBackgroundColor": "#ffffff"
   },
-  {
   "accountAssociation": {
     "header": "eyJmaWQiOjU5MDk5MywidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweDQzNzNEOUZhMmREQ2FjRDhmQUNBMzYyYzFFNjE0RjM0MjNBYUMxRmUifQ",
     "payload": "eyJkb21haW4iOiJzdGF0YXBwLW5pbmUudmVyY2VsLmFwcCJ9",
     "signature": "jY01QjjC03CkziMv06DAerd+ckbILGcJLtjrn2UDFDRFUG+yVRhpqBY5BkpSrhxgih+EwtYX4aG5zQjRpfQr/hw="
   }
 }
-}
-
