@@ -4,21 +4,23 @@ type RouteContext = {
   params: Promise<{ fid: string }>
 }
 
-const HUB_URL = "https://nemes.farcaster.xyz:2281"
+const HUB_URL = "https://hub.pinata.cloud"
 
 async function fetchAllCasts(fid: string) {
   try {
-    const response = await fetch(`${HUB_URL}/v1/castsByFid?fid=${fid}&pageSize=1000`, {
+    console.log("[v0] Fetching casts for FID:", fid)
+    const response = await fetch(`${HUB_URL}/v1/castsByFid?fid=${fid}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     })
 
     if (!response.ok) {
-      console.error("[v0] Failed to fetch casts:", response.status)
+      console.error("[v0] Failed to fetch casts:", response.status, await response.text())
       return []
     }
 
     const data = await response.json()
+    console.log("[v0] Casts response:", data.messages?.length || 0)
     return data.messages || []
   } catch (error) {
     console.error("[v0] Error fetching casts:", error)
@@ -26,42 +28,47 @@ async function fetchAllCasts(fid: string) {
   }
 }
 
-async function fetchAllReactions(fid: string) {
+async function fetchUserLikes(fid: string) {
   try {
-    const response = await fetch(`${HUB_URL}/v1/reactionsByFid?fid=${fid}&pageSize=1000`, {
+    console.log("[v0] Fetching likes for FID:", fid)
+    const response = await fetch(`${HUB_URL}/v1/reactionsByFid?fid=${fid}&reaction_type=1`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     })
 
     if (!response.ok) {
-      console.error("[v0] Failed to fetch reactions:", response.status)
+      console.error("[v0] Failed to fetch likes:", response.status)
       return []
     }
 
     const data = await response.json()
+    console.log("[v0] Likes response:", data.messages?.length || 0)
     return data.messages || []
   } catch (error) {
-    console.error("[v0] Error fetching reactions:", error)
+    console.error("[v0] Error fetching likes:", error)
     return []
   }
 }
 
-async function getUserProfile(fid: string) {
+async function fetchUserRecasts(fid: string) {
   try {
-    const response = await fetch(`${HUB_URL}/v1/userDataByFid?fid=${fid}`, {
+    console.log("[v0] Fetching recasts for FID:", fid)
+    const response = await fetch(`${HUB_URL}/v1/reactionsByFid?fid=${fid}&reaction_type=2`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     })
 
     if (!response.ok) {
-      return null
+      console.error("[v0] Failed to fetch recasts:", response.status)
+      return []
     }
 
     const data = await response.json()
-    return data
+    console.log("[v0] Recasts response:", data.messages?.length || 0)
+    return data.messages || []
   } catch (error) {
-    console.error("[v0] Error fetching profile:", error)
-    return null
+    console.error("[v0] Error fetching recasts:", error)
+    return []
   }
 }
 
@@ -69,66 +76,18 @@ export async function GET(request: NextRequest, context: RouteContext) {
   const { fid } = await context.params
 
   try {
-    console.log("[v0] Fetching stats for FID:", fid)
+    console.log("[v0] === Fetching stats for FID:", fid, "===")
 
-    const [casts, reactions, profile] = await Promise.all([
-      fetchAllCasts(fid),
-      fetchAllReactions(fid),
-      getUserProfile(fid),
-    ])
-
-    console.log("[v0] Fetched casts:", casts.length)
-    console.log("[v0] Fetched reactions:", reactions.length)
-
-    // Count total likes and recasts received on user's casts
-    let totalLikes = 0
-    let totalRecasts = 0
-
-    // Fetch reactions for each cast
-    for (const cast of casts.slice(0, 100)) {
-      // Limit to first 100 casts for performance
-      try {
-        if (cast.data?.castAddBody?.hash) {
-          const castHash = cast.hash
-          const reactionsResponse = await fetch(
-            `${HUB_URL}/v1/reactionsByCast?target_fid=${fid}&target_hash=${castHash}`,
-            {
-              method: "GET",
-              headers: { "Content-Type": "application/json" },
-            },
-          )
-
-          if (reactionsResponse.ok) {
-            const reactionsData = await reactionsResponse.json()
-            const castReactions = reactionsData.messages || []
-
-            castReactions.forEach((reaction: any) => {
-              if (reaction.data?.reactionBody?.type === 1) {
-                // Type 1 = Like
-                totalLikes++
-              } else if (reaction.data?.reactionBody?.type === 2) {
-                // Type 2 = Recast
-                totalRecasts++
-              }
-            })
-          }
-        }
-      } catch (error) {
-        console.error("[v0] Error fetching reactions for cast:", error)
-      }
-    }
-
-    // Check for spam label (simplified check)
-    const spamLabel = false // TODO: Implement actual spam detection
+    const [casts, likes, recasts] = await Promise.all([fetchAllCasts(fid), fetchUserLikes(fid), fetchUserRecasts(fid)])
 
     const stats = {
       totalCasts: casts.length,
-      totalLikes,
-      totalRecasts,
-      spamLabel,
+      totalLikes: likes.length,
+      totalRecasts: recasts.length,
+      spamLabel: false, // TODO: Implement spam detection
     }
 
-    console.log("[v0] Final stats:", stats)
+    console.log("[v0] === Final stats ===", stats)
 
     return NextResponse.json(stats)
   } catch (error) {
