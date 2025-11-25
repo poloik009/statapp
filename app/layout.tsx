@@ -14,18 +14,18 @@ export const metadata: Metadata = {
   generator: "v0.app",
   other: {
     "fc:frame": "vNext",
-    "fc:frame:image": `${process.env.NEXT_PUBLIC_APP_URL || "https://statapp-nine.vercel.app"}/og-image.png`,
+    "fc:frame:image": `${process.env.NEXT_PUBLIC_APP_URL || "https://statapp-nine.vercel.app"}/og-image.jpg`,
     "fc:frame:button:1": "View Stats",
     "fc:frame:button:1:action": "launch_frame",
   },
   icons: {
     icon: [
       {
-        url: "/icon-light-32x32.png",
+        url: "/icon-light-32x32.jpg",
         media: "(prefers-color-scheme: light)",
       },
       {
-        url: "/icon-dark-32x32.png",
+        url: "/icon-dark-32x32.jpg",
         media: "(prefers-color-scheme: dark)",
       },
       {
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
         type: "image/png",
       },
     ],
-    apple: "/apple-icon.png",
+    apple: "/apple-icon.jpg",
   },
 }
 
